@@ -1,0 +1,39 @@
+/*###ICF### Section handled by ICF editor, don't touch! ****/
+/*-Editor annotation file-*/
+/* IcfEditorFile="$TOOLKIT_DIR$\config\ide\IcfEditor\cortex_v1_0.xml" */
+/*-Specials-*/
+define symbol __ICFEDIT_intvec_start__ = 0x08060000;
+/*-Memory Regions-*/
+define symbol __ICFEDIT_region_ROM_start__ = 0x08060000;
+define symbol __ICFEDIT_region_ROM_end__   = 0x080FFFFF;
+define symbol __ICFEDIT_region_RAM_start__ = 0x20000000;
+define symbol __ICFEDIT_region_RAM_end__   = 0x2001FFFF;
+/*-Sizes-*/
+define symbol __ICFEDIT_size_cstack__ = 0x400;
+/**** End of ICF editor section. ###ICF###*/
+
+define symbol __ICFEDIT_intvec_size__ = 0x180 + 4;
+define symbol __ICFEDIT_intvec_end__ = __ICFEDIT_intvec_start__ + __ICFEDIT_intvec_size__;
+
+define memory mem with size = 4G;
+define region INTVEC_region= mem:[from __ICFEDIT_intvec_start__     to __ICFEDIT_intvec_end__];
+define region ROM_region   = mem:[from __ICFEDIT_intvec_end__       to __ICFEDIT_region_ROM_end__];
+define region RAM_region   = mem:[from __ICFEDIT_region_RAM_start__ to __ICFEDIT_region_RAM_end__];
+
+define block CSTACK    with alignment = 8, size = __ICFEDIT_size_cstack__   { };
+define block HEAP      with alignment = 8 { };
+define symbol __heap_end__ = __ICFEDIT_region_RAM_end__;
+export symbol __heap_end__;
+
+initialize by copy { readwrite };
+//initialize by copy with packing = none { section __DLIB_PERTHREAD }; // Required in a multi-threaded application
+do not initialize  { section .noinit };
+
+place at start of INTVEC_region {readonly section INTVEC};
+
+place in ROM_region   { readonly };
+".rottenlogs": place in ROM_region   { section .rottenlogs };
+".rottenscribes": place in ROM_region   { section .rottenscribes };
+keep { section .rottenlogs, section .rottenscribes };
+define block STACK_HEAP with fixed order { block CSTACK, block HEAP };
+place in RAM_region { readwrite, last block STACK_HEAP };

@@ -1,0 +1,44 @@
+--exclude=..\Core\Tools
+--exclude=..\Core\RTOS
+--exclude=..\Core\Drivers\ST
+--exclude=..\Core\Middleware\ThirdParty
+--exclude=..\EC
+--exclude=..\EWARM
+--exclude=..\Shared
+--exclude=..\Tools
+
+#Allman style uses broken brackets.
+--style=allman
+
+#Indent using # spaces per indent (e.g. -s3 --indent=spaces=3 ). # must be between 2 and 20. Not specifying # will result in a default of 4 spaces per indent.
+--indent=spaces=4
+
+#Indent 'switch' blocks so that the 'case X:' statements are indented in the switch block. The entire case block is indented.
+--indent-switches
+
+#Insert space padding between a header (e.g. 'if', 'for', 'while'...) and the following paren. Any end of line comments will remain in the original column, if possible. This can be used with unpad-paren to remove unwanted spaces.
+--pad-header
+
+#Converts tabs into spaces in the non-indentation part of the line. The number of spaces inserted will maintain the spacing of the tab. The current setting for spaces per tab is used. It may not produce the expected results if convert-tabs is used when changing spaces per tab. Tabs are not replaced in quotes.
+--convert-tabs
+
+#When used with --style=java, --style=kr, --style=stroustrup, --style=linux, or --style=1tbs, this breaks closing headers (e.g. 'else', 'catch', ...) from their immediately preceding closing brackets. Closing header brackets are always broken with the other styles.
+--break-closing-brackets
+
+#Add brackets to unbracketed one line conditional statements (e.g. 'if', 'for', 'while'...). The statement must be on a single line. The brackets will be added according to the currently requested predefined style or bracket type. If no style or bracket type is requested the brackets will be attached. If --add-one-line-brackets is also used the result will be one line brackets.
+--add-brackets
+
+#Indent C++ comments beginning in column one. By default C++ comments beginning in column one are not indented. This option will allow the comments to be indented with the code.
+--indent-col1-comments
+
+#Indent 'case X:' blocks from the 'case X:' headers. Case statements not enclosed in blocks are NOT indented.
+--indent-cases
+
+#Insert space padding around operators. Any end of line comments will remain in the original column, if possible. Note that there is no option to unpad. Once padded, they stay padded.
+--pad-oper
+
+#Attach a pointer or reference operator (*, &, or ^) to either the variable type (left) or variable name (right), or place it between the type and name (middle). The spacing between the type and name will be preserved, if possible. This option is for C/C++, C++/CLI, and C# files. To format references separately use the following align-reference option.
+--align-pointer=type
+
+#Force use of the specified line end style. Valid options are windows (CRLF), linux (LF), and macold (CR). MacOld style is the format for Mac OS 9 and earlier. OS X uses the Linux style. If one of these options is not used the line ends will be determined automatically from the input file.
+--lineend=windows

@@ -1,0 +1,6 @@
+# Source								Destination									Rule
+EWARM/Professor/Exe/*.bin				<DEPLOY_DIR>/DP1/lpm_<VERSION_STRING>.bin	glob
+EWARM/Professor/Exe/*.hex				<DEPLOY_DIR>/DP1/lpm_<VERSION_STRING>.hex	glob
+EWARM/Professor/Exe/*.out				<DEPLOY_DIR>/DP1/lpm_<VERSION_STRING>.out	glob
+EWARM/Professor/List/*.map				<DEPLOY_DIR>/DP1/lpm_<VERSION_STRING>.map	glob
+TAP*.html								<DEPLOY_DIR>/.								glob

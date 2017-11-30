@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<blob>
+    <header master_version="0.9.3.1916158" name="ginger_0.9.3.1916158.bos" max_size="2599204"/>
+    <manifest_entries>
+        <entry name="ERC.upd" path=".\ERC.upd" version="0.9.3.8898"/>
+        <entry name="RESET_ERC.upd" path=".\RESET_ERC.upd" version="0.9.3.8898"/>
+        <entry name="SMRT00.upd" path=".\SMRT00.upd" version="0.9.3.8898"/>
+        <entry name="SMRT01.upd" path=".\SMRT01.upd" version="0.9.3.8898"/>
+        <entry name="SMRT02.upd" path=".\SMRT02.upd" version="0.9.3.8898"/>
+        <entry name="INSTALLER00.upd" path=".\INSTALLER00.upd" version="0.9.3.8898"/>
+        <entry name="INSTALLER01.upd" path=".\INSTALLER01.upd" version="0.9.3.8898"/>
+        <entry name="INSTALLER02.upd" path=".\INSTALLER02.upd" version="0.9.3.8898"/>
+        <entry name="9777g.bin" path=".\9777g.bin" version="1.14.02.01"/>
+        <entry name="wam.bin" path=".\wam.bin" version="20.000.7961"/>
+        <entry name="speaker.bos" path=".\speaker.bos" version="0.8.2.1855797"/>
+        <entry name="f0.bin" path=".\f0.bin" version="0.9.3.8900"/>
+        <entry name="f0_mfg.bin" path=".\f0_mfg.bin" version="1.0.0.8372"/>
+        <entry name="ginger_mfg.bin" path=".\ginger_mfg.bin" version="1.0.0.8372"/>
+        <entry name="ginger.bin" path=".\ginger.bin" version="0.9.3.8908"/>
+        <entry name="gingerbl.bin" path=".\gingerbl.bin" version="1.0.0.7617"/>
+    </manifest_entries>
+</blob>

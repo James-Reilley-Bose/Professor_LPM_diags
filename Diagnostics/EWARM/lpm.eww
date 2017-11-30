@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<workspace>
+  <project>
+    <path>$WS_DIR$\lpm.ewp</path>
+  </project>
+  <batchBuild>
+    <batchDefinition>
+      <name>lpm build all</name>
+      <member>
+        <project>lpm</project>
+        <configuration>Professor</configuration>
+      </member>
+      <member>
+        <project>lpm</project>
+        <configuration>Professor_DP0</configuration>
+      </member>
+    </batchDefinition>
+  </batchBuild>
+</workspace>
+
+

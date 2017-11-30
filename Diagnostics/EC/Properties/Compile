@@ -1,0 +1,36 @@
+export PATH="E:\Program Files (x86)\IAR Systems\Embedded Workbench 7.2\common\bin":$PATH
+
+if [ "$[Klocwork]" == "true" ]; then
+    KWINJECT="kwinject -u"
+fi
+
+cd $[buildDir]
+
+for variant in Professor Professor_DP0; do
+    printf "\n\n===================================================\n%s  Starting %s variant build\n" "$( date +%F\ %R:%S)" $variant
+    if grep -q "<configuration>$variant" EWARM/lpm.ewp ; then
+        $KWINJECT iarbuild EWARM/lpm.ewp -make $variant -log info
+        if [ $? != 0 ]; then
+            failed="$failed $variant"
+        fi
+        if [ -f Tools/parseMapFile.pl -a -f EWARM/$variant/List/lpm.map ]; then
+            perl Tools/parseMapFile.pl EWARM/$variant/List/lpm.map > EWARM/$variant/List/memory_usage.txt
+        fi
+    fi
+done
+
+if [ -f Tools/doctap.py ]; then
+    echo "Creating TAP Doc $[Version]..."
+    python Tools/doctap.py "TAP Doc $[Version]" . .
+    echo "Finished creating TAP Doc $[Version]!"
+fi
+
+printf "\n\n%s  Finished all variant builds\n================================================\n" "$( date +%F\ %R:%S)"
+
+if [ -n "$failed" ]; then
+    ectool setProperty summary "Failed build(s):$failed"
+    #curl -X POST --data-urlencode 'payload={"channel": "#lpm", "username": "EC", "text": "BUILD BROKEN: '"$failed"'"}' https://hooks.slack.com/services/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
+    exit 1
+else
+    exit 0
+fi

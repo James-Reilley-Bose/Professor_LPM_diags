@@ -1,0 +1,66 @@
+// This file is a template from which the real version.h is generated depending
+// on the context (production build, developer build, etc.).  The script that
+// generates the version.h file lives in the version library directory.
+
+#ifdef LIMIT_VERSION_H_INCLUDES
+/*
+ * This file should only be included by the version library.  If you want
+ * version information get it from there...  The reason for this is to
+ * avoid having to rebuild lots of code every time the version.h file
+ * is recreated.
+ */
+#define VERSION_MAJOR "1"
+#define VERSION_MINOR "5"
+#define VERSION_PATCH "0"
+
+#define VERSION_BUILD_NUMBER "<BUILDNUMBER>"
+#define VERSION_BUILD_BRANCHNAME "<BRANCHNAME>"
+#define VERSION_BUILD_DEVELOPER "<DEVELOPER>"
+#define VERSION_BUILD_TYPE "<BUILDTYPE>"
+#define VERSION_BUILD_MACHINE "<MACHINE>"
+#define VERSION_BUILD_TIME "<BUILDTIME>"
+
+#define SOFTWARE_COPYRIGHT "Copyright <YEAR> Bose Corporation"
+
+// Which buffer gets preferential placement?  The one with the most information.
+// For example, this can be used to find the data by searching through binaries for a fixed location.
+#define BUFFER_FOR_PLACEMENT        versionShort
+
+#define VERSION_BUFFER_SHORT    VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH
+
+#ifdef VERSION_SUPPORT_BUILD_NUMBER
+    #define VERSION_BUFFER          VERSION_BUFFER_SHORT "." VERSION_BUILD_NUMBER
+    #undef BUFFER_FOR_PLACEMENT
+    #define BUFFER_FOR_PLACEMENT    version
+#else
+    #define VERSION_BUFFER          VERSION_BUFFER_SHORT
+#endif
+
+#ifdef VERSION_SUPPORT_EXTENDED_DATA
+    #define VERSION_BUFFER_LONG     VERSION_BUFFER " " VERSION_BUILD_BRANCHNAME " (" VERSION_BUILD_TYPE ") " VERSION_BUILD_TIME
+    #undef BUFFER_FOR_PLACEMENT
+    #define BUFFER_FOR_PLACEMENT    versionLong
+#else
+    #define VERSION_BUFFER_LONG     VERSION_BUFFER
+#endif
+
+#ifdef VERSION_SUPPORT_BUFFERS
+static const char versionShort[] = VERSION_BUFFER_SHORT;
+
+  #ifdef VERSION_SUPPORT_BUILD_NUMBER
+  static const char version[] = VERSION_BUFFER;
+  #endif
+
+  #ifdef VERSION_SUPPORT_EXTENDED_DATA
+  static const char versionLong[] = VERSION_BUFFER_LONG;
+  #endif
+#endif
+
+// Place any special placement instructions here
+#ifdef __TMS320C6X__
+#pragma DATA_SECTION( BUFFER_FOR_PLACEMENT, "VERSION" );
+#endif
+
+#else  // LIMIT_VERSION_H_INCLUDES
+#error Please do not include this file.  Access version information through versionlib.h only.
+#endif // LIMIT_VERSION_H_INCLUDES
