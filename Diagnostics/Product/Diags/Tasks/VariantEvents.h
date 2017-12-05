@@ -46,8 +46,29 @@
         EVENT(CEC_MESSAGE_ID_InitiatePoll) \
         EVENT(CEC_MESSAGE_ID_TerminatePoll) \
         EVENT(CEC_MESSAGE_ID_End) \
-        \
+\
+        EVENT(SpiSlaveTest_Msg_ID_Start) \
+        EVENT(SpiSlaveTest_Msg_ID_InitializeSpi) \
+        EVENT(SpiSlaveTest_Msg_ID_ReceivedPacket) \
+        EVENT(SpiSlaveTest_Msg_ID_SendPacket) \
+        EVENT(SpiSlaveTest_Msg_ID_SendPacketComplete) \
+        EVENT(SpiSlaveTest_Msg_ID_DeInitSpi) \
+        EVENT(SpiSlaveTest_Msg_ID_CancelTransmit) \
+        EVENT(SpiSlaveTest_Msg_ID_End) \
+\
         EVENT(UEIBLASTER_MESSAGE_ID_Start)  \
+        EVENT(UEIBLASTER_MESSAGE_ID_GetSoftwareVersion)  \
+        EVENT(UEIBLASTER_MESSAGE_ID_SendKey)  \
+        EVENT(UEIBLASTER_MESSAGE_ID_SendQuickKey)  \
+        EVENT(UEIBLASTER_MESSAGE_ID_DownloadCodeSet) \
+        EVENT(UEIBLASTER_MESSAGE_ID_ListAllUpgradeCode) \
+        EVENT(UEIBLASTER_MESSAGE_ID_RemoveCodeSet) \
+        EVENT(UEIBLASTER_MESSAGE_ID_GetKeyMap) \
+        EVENT(UEIBLASTER_MESSAGE_ID_EndContinuousKey) \
+        EVENT(UEIBLASTER_MESSAGE_ID_FactoryReset) \
+        EVENT(UEIBLASTER_MESSAGE_ID_MasterReset) \
+        EVENT(UEIBLASTER_MESSAGE_ID_GetBitMap) \
+        EVENT(UEIBLASTER_MESSAGE_ID_UpdateMoreButtons) \
         EVENT(UEIBLASTER_MESSAGE_ID_PowerUp) \
         EVENT(UEIBLASTER_MESSAGE_ID_SendFromIPC) \
         EVENT(UEIBLASTER_MESSAGE_ID_SendFromTAP) \
@@ -103,12 +124,18 @@
         EVENT(DIAG_MESSAGE_SNAP_OFF) \
         EVENT(DIAG_MESSAGE_SNAP_REBOOT) \
         EVENT(DIAG_MESSAGE_ID_LCD_BACKLIGHT) \
+        EVENT(DIAG_MESSAGE_ID_IR) \
         EVENT(DIAG_MESSAGE_ID_LCD_BACKLIGHT_OPT) \
         EVENT(DIAG_MESSAGE_ID_PSOC_CMD) \
         EVENT(DIAG_MESSAGE_ID_PSOC_READ_CMD) \
         EVENT(DIAG_MESSAGE_ID_OPT) \
-        EVENT(DIAG_MESSAGE_ID_LED_OPT) \
+        EVENT(DIAG_MESSAGE_ID_PSOC) \
         EVENT(DIAG_MESSAGE_ID_Timer) \
+        EVENT(DIAG_MESSAGE_ID_IR_BLASTER) \
+        EVENT(DIAG_MESSAGE_ID_BUSTEST_DSP) \
+        EVENT(DIAG_MESSAGE_ID_BUSTEST_F0) \
+        EVENT(DIAG_MESSAGE_ID_BUSTEST_PSOC) \
+        EVENT(DIAG_MESSAGE_ID_BUSTEST_IRB) \
         EVENT(DIAG_MESSAGE_ID_End)  \
 \
         EVENT(REMOTE_MESSAGE_IRQ_CHANGED) \

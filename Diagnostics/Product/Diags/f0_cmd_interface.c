@@ -3,8 +3,6 @@
 #include "etap.h"
 #include "f0_cmd_interface.h"
 
-SCRIBE_DECL(diag);
-
 /* convenient size defs */
 uint32_t F0_GPIO_PIN_struct_size   = sizeof(F0_GPIO_PIN_struct);
 uint32_t F0_VARIANT_struct_size    = sizeof(F0_VARIANT_struct);
@@ -47,7 +45,7 @@ BOOL check_for_f0_isr_errors(uint32_t isrValue)
         /* display all ISR errors */
         if ( isrValue & f0_isr[i].mask)
         {
-            LOG(diag, ROTTEN_LOGLEVEL_NORMAL,"\r\n\t%s error occured!\r\n",
+            TAP_Printf("\r\n\t%s error occured!\r\n",
                        f0_isr[i].name);
             status = FALSE;
         }

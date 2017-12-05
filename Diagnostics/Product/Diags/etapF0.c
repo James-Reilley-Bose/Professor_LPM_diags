@@ -34,6 +34,8 @@
 #define HIGH         (ENABLE)
 #define LOW          (DISABLE)
 
+extern IpcF0HealthStatusPayload_t F0HS;
+
 SCRIBE_DECL(diag);
 
 
@@ -151,13 +153,17 @@ TAPCommand(TAP_F0)
     {
         f0_diags(1);
     }
+    else if ( !strcmp("help", CommandLine->args[0]) )
+    {
+        TAP_Printf( F0_HELP_TEXT_4_OF_4);
+    }
     else
     {
 
         TAP_Printf( F0_ERROR_ARGS);
-        TAP_Printf( F0_HELP_TEXT_1_OF_4);
-        TAP_Printf( F0_HELP_TEXT_2_OF_4);
-        TAP_Printf( F0_HELP_TEXT_3_OF_4);
+        //TAP_Printf( F0_HELP_TEXT_1_OF_4);
+        //TAP_Printf( F0_HELP_TEXT_2_OF_4);
+        //TAP_Printf( F0_HELP_TEXT_3_OF_4);
         TAP_Printf( F0_HELP_TEXT_4_OF_4);
     }
 }
@@ -292,9 +298,9 @@ void f0_pwr_tap( char* arg )
     else
     {
         TAP_Printf( F0_ERROR_ARGS);
-        TAP_Printf( F0_HELP_TEXT_1_OF_4);
-        TAP_Printf( F0_HELP_TEXT_2_OF_4);
-        TAP_Printf( F0_HELP_TEXT_3_OF_4);
+        //TAP_Printf( F0_HELP_TEXT_1_OF_4);
+        //TAP_Printf( F0_HELP_TEXT_2_OF_4);
+        //TAP_Printf( F0_HELP_TEXT_3_OF_4);
         TAP_Printf( F0_HELP_TEXT_4_OF_4);
 
     }
@@ -341,9 +347,9 @@ void f0_gpio_pin_tap( char* arg,
     else
     {
         TAP_Printf( F0_ERROR_ARGS);
-        TAP_Printf( F0_HELP_TEXT_1_OF_4);
-        TAP_Printf( F0_HELP_TEXT_2_OF_4);
-        TAP_Printf( F0_HELP_TEXT_3_OF_4);
+        //TAP_Printf( F0_HELP_TEXT_1_OF_4);
+        //TAP_Printf( F0_HELP_TEXT_2_OF_4);
+        //TAP_Printf( F0_HELP_TEXT_3_OF_4);
         TAP_Printf( F0_HELP_TEXT_4_OF_4);
     }
 }
@@ -579,6 +585,7 @@ BOOL f0_pwr_seq_cmd( uint8_t operation )
 //--------------------------------------------------------------------
 BOOL f0_variant_cmd( PROFESSOR_F0_CMDS cmd)
 {
+    #if 0
     F0_VARIANT_struct f0 = {0};
     uint16_t pktSize = (HDR_SIZE + F0_VARIANT_struct_size);
 
@@ -616,6 +623,11 @@ BOOL f0_variant_cmd( PROFESSOR_F0_CMDS cmd)
     //        TAP_Printf( "\r\n\t%s\r\n", f0.copyright);
 
     return (TRUE);
+    #else
+    TAP_Printf("F0 Bootloader: %s\n", F0HS.swBootloaderVersion);
+    TAP_Printf("F0: %s\n", F0HS.swLongVersion);
+    return (TRUE);
+    #endif
 }
 //-------------------------------------------------------------------
 // Function: I2C_BUS_HANDLE_TYPE init_i2c_bus_3(I2C_API_ERROR_CODE *i2cError)

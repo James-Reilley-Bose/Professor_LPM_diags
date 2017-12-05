@@ -82,6 +82,7 @@ void EXTI9_5_IRQHandler(void);
 void EXTI15_10_IRQHandler(void);
 void PSoCTask_ConfigureEXTI(void);
 void PSoCInt_en_dis(int en);
+void Psoc_Int_Handler(void);
 
 /* HDMI Configurations */
 typedef enum

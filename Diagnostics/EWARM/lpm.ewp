@@ -303,11 +303,9 @@
         <option>
           <name>CCIncludePath2</name>
           <state>$PROJ_DIR$\..\</state>
-          <state>$PROJ_DIR$\..\Product\Diags</state>
           <state>$PROJ_DIR$\..\A4VCommon</state>
           <state>$PROJ_DIR$\..\A4VCommon\Accessories</state>
           <state>$PROJ_DIR$\..\A4VCommon\Remote</state>
-          <state>$PROJ_DIR$\..\A4VCommon\Uei</state>
           <state>$PROJ_DIR$\..\A4VCommon\Update</state>
           <state>$PROJ_DIR$\..\A4VCommon\WiredID</state>
           <state>$PROJ_DIR$\..\A4VCommon\WiredID\Common</state>
@@ -348,6 +346,13 @@
           <state>$PROJ_DIR$\..\Core\Drivers\ST\STM32F2xx\STM32F2xx_StdPeriph_Driver\inc</state>
           <state>$PROJ_DIR$\..\Core\Drivers\ST\STM32F2xx\STM32F2xx_StdPeriph_Driver\src</state>
           <state>$PROJ_DIR$\..\Core\Drivers\ST\STM32F2xx\USB_VCP_Logger\inc</state>
+          <state>$PROJ_DIR$\..\Product\Configuration</state>
+          <state>$PROJ_DIR$\..\Product\Configuration\Professor</state>
+          <state>$PROJ_DIR$\..\Product\Diags</state>
+          <state>$PROJ_DIR$\..\Product\Diags\Uei</state>
+          <state>$PROJ_DIR$\..\Product\Diags\SPI</state>
+          <state>$PROJ_DIR$\..\Product\Diags\Keys</state>
+          <state>$PROJ_DIR$\..\Product\Diags\Tasks</state>
           <state>$PROJ_DIR$\..\Core\Middleware\Bose\Common</state>
           <state>$PROJ_DIR$\..\Core\Middleware\Bose\Common\PWMTimer</state>
           <state>$PROJ_DIR$\..\Core\Middleware\Bose\Configuration</state>
@@ -383,8 +388,6 @@
           <state>$PROJ_DIR$\..\Product</state>
           <state>$PROJ_DIR$\..\Product\Accessories</state>
           <state>$PROJ_DIR$\..\Product\CEC</state>
-          <state>$PROJ_DIR$\..\Product\Configuration</state>
-          <state>$PROJ_DIR$\..\Product\Configuration\Professor</state>
           <state>$PROJ_DIR$\..\Product\DeviceModel</state>
           <state>$PROJ_DIR$\..\Product\EDID</state>
           <state>$PROJ_DIR$\..\Product\Keys</state>
@@ -410,7 +413,6 @@
           <state>$PROJ_DIR$\..\Product\SiliconImage\platform\nuc123_coos</state>
           <state>$PROJ_DIR$\..\Product\SystemStates</state>
           <state>$PROJ_DIR$\..\Product\Tap</state>
-          <state>$PROJ_DIR$\..\Product\Tasks</state>
           <state>$PROJ_DIR$\..\Product\Timers</state>
           <state>$PROJ_DIR$\..\Product\Update</state>
           <state>$PROJ_DIR$\..\Product\UI</state>
@@ -2225,6 +2227,9 @@
     </group>
     <group>
       <name>Uei</name>
+      <excluded>
+        <configuration>Professor</configuration>
+      </excluded>
       <file>
         <name>$PROJ_DIR$\..\A4VCommon\Uei\UEI_KeyIndex.h</name>
       </file>
@@ -4083,9 +4088,6 @@
       <file>
         <name>$PROJ_DIR$\..\Product\Configuration\FreeRTOSConfig.h</name>
       </file>
-      <file>
-        <name>$PROJ_DIR$\..\Product\Configuration\version.h</name>
-      </file>
     </group>
     <group>
       <name>DeviceModel</name>
@@ -4113,8 +4115,89 @@
     </group>
     <group>
       <name>Diags</name>
+      <group>
+        <name>Keys</name>
+        <file>
+          <name>$PROJ_DIR$\..\Product\Diags\Keys\KeyVariant.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Product\Diags\Keys\KeyVariant.h</name>
+        </file>
+      </group>
+      <group>
+        <name>SPI</name>
+        <file>
+          <name>$PROJ_DIR$\..\Product\Diags\SPI\SpiSlaveTestTask.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Product\Diags\SPI\SpiSlaveTestTask.h</name>
+        </file>
+      </group>
+      <group>
+        <name>Tasks</name>
+        <file>
+          <name>$PROJ_DIR$\..\Product\Diags\Tasks\VariantEvents.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Product\Diags\Tasks\VariantTasks.c</name>
+        </file>
+      </group>
+      <group>
+        <name>Uei</name>
+        <file>
+          <name>$PROJ_DIR$\..\Product\Diags\Uei\UEI_KeyIndex.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Product\Diags\Uei\UEIConfig.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Product\Diags\Uei\UEIDefinitions.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Product\Diags\Uei\UEISerial.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Product\Diags\Uei\UEISerial.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Product\Diags\Uei\UEIServices.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Product\Diags\Uei\UEIServices.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Product\Diags\Uei\UEITask.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Product\Diags\Uei\UEITask.h</name>
+        </file>
+      </group>
       <file>
         <name>$PROJ_DIR$\..\Product\Diags\ascii.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_adc_test.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_adc_test.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_amp_test.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_amp_test.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_bus_test.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_bus_test.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_button_test.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_button_test.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Product\Diags\diag_cec.c</name>
@@ -4123,16 +4206,88 @@
         <name>$PROJ_DIR$\..\Product\Diags\diag_cec.h</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_clock_test.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_clock_test.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_darr_test.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_darr_test.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_gpio_test.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_gpio_test.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Product\Diags\Diag_i2c_test.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Product\Diags\Diag_i2c_test.h</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_ir_blaster_test.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_ir_blaster_test.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_ir_test.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_ir_test.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_lcd_test.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_lcd_test.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_led_test.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_led_test.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_opt3001_test.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_opt3001_test.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_optbyter_test.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_optbyter_test.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_psoc_test.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_psoc_test.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_snap_test.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\Diag_snap_test.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Product\Diags\DiagData.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Product\Diags\DiagRivieraLPM_Values.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\DiagsDispatcher.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Product\Diags\DiagsDispatcher.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Product\Diags\DiagTask.c</name>
@@ -4210,11 +4365,20 @@
     </group>
     <group>
       <name>Keys</name>
+      <excluded>
+        <configuration>Professor</configuration>
+      </excluded>
       <file>
         <name>$PROJ_DIR$\..\Product\Keys\KeyVariant.c</name>
+        <excluded>
+          <configuration>Professor</configuration>
+        </excluded>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Product\Keys\KeyVariant.h</name>
+        <excluded>
+          <configuration>Professor</configuration>
+        </excluded>
       </file>
     </group>
     <group>
@@ -4419,9 +4583,15 @@
       <name>Tap</name>
       <file>
         <name>$PROJ_DIR$\..\Product\Tap\DiagsDispatcher.c</name>
+        <excluded>
+          <configuration>Professor</configuration>
+        </excluded>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Product\Tap\DiagsDispatcher.h</name>
+        <excluded>
+          <configuration>Professor</configuration>
+        </excluded>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Product\Tap\etapCEC.c</name>
@@ -4449,15 +4619,6 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Product\Tap\TapCommands.c</name>
-      </file>
-    </group>
-    <group>
-      <name>Tasks</name>
-      <file>
-        <name>$PROJ_DIR$\..\Product\Tasks\VariantEvents.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Product\Tasks\VariantTasks.c</name>
       </file>
     </group>
     <group>

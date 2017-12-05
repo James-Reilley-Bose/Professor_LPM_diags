@@ -10,10 +10,23 @@
 #include "genTimer.h"
 #include "timers.h"
 #include "DiagsDispatcher.h"
+#include "Diag_opt3001_test.h"
+#include "Diag_ir_test.h"
+#include "Diag_gpio_test.h"
+#include "Diag_button_test.h"
+#include "Diag_led_test.h"
 #include "Diag_i2c_test.h"
+#include "Diag_ir_blaster_test.h"
+#include "Diag_adc_test.h"
+#include "Diag_lcd_test.h"
+#include "Diag_snap_test.h"
+#include "Diag_psoc_test.h"
 #include "serialPSOCListener.h"
 #include <stdio.h>
-
+#include "IpcInterface.h"
+#include "IPCRouterTask.h"
+#include "DeviceInterface.h"
+#include "Diag_bus_test.h"
 SCRIBE_DECL(diag);
 
 
@@ -26,20 +39,6 @@ static TimerHandle_t s_DiagScanTimerHandle;
 int testrepeatcnt[DIAGTESTCNTLAST];
 
 ManagedTask* DiagTaskHandle = NULL;
-
-static int micmute_state = 0;
-void check_mute_button(void)
-{
-  int curval;
-  curval = GPIO_ReadInputDataBit(MIC_MUTE_BANK, 0x1 << MIC_MUTE_PIN);
-  if(micmute_state !=  curval)
-  {
-    micmute_state = curval;
-    LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "MIC MUTE %s", (curval)?"ON":"OFF");  
-  }
-}
-  
-
 
 void DiagTask_Init(void* p)
 {
@@ -78,8 +77,9 @@ void DiagTask(void* pvParameters)
 int timeout_tickcnt = 0;
 static uint32_t adcmask = 0x1f, adcverb=1;
 static uint32_t ledmask = 0xf;
-//static uint32_t buttontestmask = 0xf;
-
+#if (PRODUCT_HARDWARE_VARIANT == 0)
+static uint32_t buttontestmask = 0xf;
+#endif
 char ag1[] = {'1', 0};
 char ag2[] = {'t', 0};
 char* ag[] = {ag1, ag2};
@@ -90,27 +90,39 @@ char* gag[] = {gag1, gag2};
 
 uint32_t opt[] = {0, 0, 0, 0}; //save opt request args
 
-//static uint32_t lux_scale = ONE_PCNT_LUX_FULL_SCALE;
+#if (PRODUCT_HARDWARE_VARIANT == 0)
+static uint16_t backlight_arg[] = {0, 0, 0}; //freq, pwm%, pwm%
+static uint32_t lux_scale = ONE_PCNT_LUX_FULL_SCALE;
+#endif
 
 static void diags_help(void){
-  LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-36s - %s", "dt help", "this help");
-  LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-36s - %s", "dt adc,repeatcnt,mask,verbosity", "adc read values");
-  LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-36s - %s", "dt i2c,bus#", "i2cscan bus 1,2 or 3");
-  LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-36s - %s", "dt gpio,bank", "dump gpiox info,bank=a,b,c,d,e,f,g,h,i");
-  LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-36s - %s", "dt show", "show all gpio pins");
-  LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-36s - %s", "dt psoc,<>,<>", "commands to psoc");
-  LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-36s - %s", "dt opt3001,init", "init opt, not required" );
-  LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-36s - %s", "dt opt3001,<wr,rd>,<reg>,<val>", "write or read reg value, hex" );
-  LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-36s - %s", "dt opt3001,<lux>,<MSdelay>,<repeatcnt>", "get output conterted to LUX, decimal intputs" );
-  LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-36s - %s", "dt opt3001,<bus>,<bus #>", "set the i2c bus 1,2,3, and init" );
-  LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-36s - %s", "dt lopt,<delay>,<gain>", "opt controls light bar intesity" );
-  LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-36s - %s", "dt lopt ", "execute cmd to start, again to stop" );
-  LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "\n\r");
+	LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-25s - %s", "dt help", "this help");
+    LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-25s - %s", "dt adc,repeatcnt,mask", "adc read values");
+    LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-25s - %s", "dt i2c,bus#", "i2cscan bus 1,2 or 3");
+    LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-25s - %s", "dt gpio,bank", "dump gpiox info,bank=a,b,c,d,e,f,g,h,i");
+    LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-25s - %s", "dt show", "show all gpio pins");
+    #if (PRODUCT_HARDWARE_VARIANT == 0)
+    LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-25s - %s", "dt button", "enable button press check");
+    LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-25s - %s", "dt lcdb <freq>,<nn.nn>", "lcdbacklight,freq,pwm");
+    #endif
+    LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-25s - %s", "dt psoc,<>,<>", "commands to psoc");
+    LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-25s - %s", "dt opt3001,init", "init opt, not required" );
+    LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-25s - %s", "dt opt3001,<wr,rd>,<reg>,<val>", "write or read reg value, hex" );
+    LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-25s - %s", "dt opt3001,<lux>,<MSdelay>,<repeatcnt>", "get output conterted to LUX, decimal intputs" );
+    LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-25s - %s", "dt opt3001,<bus>,<bus #>", "set the i2c bus 1,2,3, and init" );
+    LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-25s - %s", "dt bopt,<freq>,<scale>", "PWM display, driven by OPT output, scale sets range" );
+    LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-25s - %s", "dt ir,<help, rx>,<start, stop>", "help: show help for this command, rx: displaying of IR data received start or stop" );
+    LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-25s - %s", "dt irb, <info,dl, send>, <vr, cs, 0x4>", "info,vr/cs: display version/codeset, dl: download code, send, 0x4: send key 0x4" );
+    LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "%-25s - %s", "dt bus, <dsp, f0, psoc, irb, all>, <on, off>, <repetition>", "turn bus test on/off with repetition (0 means non-stop for on)" );
+	LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "\n\r");
 }
 
 void DiagTask_HandleMsg(GENERIC_MSG_t* msg)
 {
-    int ac = 2;
+	int ac = 2;
+	#if (PRODUCT_HARDWARE_VARIANT == 0)   
+    	uint32_t lux[2];
+	#endif
 
     switch (msg->msgID)
     {
@@ -122,28 +134,33 @@ void DiagTask_HandleMsg(GENERIC_MSG_t* msg)
             testrepeatcnt[ADCCNT] = 1;
             dadc_config();  //init adc registers
             adcmask = 0x1f; // default to all
-            if(msg->params[0]){
+            if(msg->params[0])
+            {
               testrepeatcnt[ADCCNT] = msg->params[0]&0xff;
-              if(msg->params[1]){
+              if(msg->params[1])
+              {
                 adcmask = msg->params[1]&0xff;
               }
-              if(msg->params[2]){ 
+              if(msg->params[2])
+              {
                 adcverb = msg->params[2];
               }
             }
             break;
+			
         case DIAG_MESSAGE_ID_LED:
             testrepeatcnt[LEDCNT] = 1; //default is toggle once
             ledmask = 0xf;
             if (msg->params[0])
             {
                 testrepeatcnt[LEDCNT] = msg->params[0];
-                if (msg->params[1])
-                {
-                    ledmask = msg->params[1] & 0xff;
-                }
+			}
+            if (msg->params[1])
+            {
+                ledmask = msg->params[1] & 0xff;
             }
             break;
+
         case DIAG_MESSAGE_ID_I2C:
             testrepeatcnt[I2CCNT] = 1;
             if (msg->params[0])
@@ -168,12 +185,12 @@ void DiagTask_HandleMsg(GENERIC_MSG_t* msg)
                 gag[0][0] = msg->params[0];
             }
             break;
-
+#if (PRODUCT_HARDWARE_VARIANT == 0)
         case DIAG_MESSAGE_ID_BUTTON:
-//            testrepeatcnt[BUTTONCNT] = 4;
-//            buttontestmask = 0xf;
+            testrepeatcnt[BUTTONCNT] = 4;
+            buttontestmask = 0xf;
             break;
-
+#endif
         case DIAG_MESSAGE_PON_RESET_N:
             testrepeatcnt[PONRESETCNT] = 1;
             break;
@@ -185,6 +202,28 @@ void DiagTask_HandleMsg(GENERIC_MSG_t* msg)
         case DIAG_MESSAGE_SNAP_REBOOT:
             testrepeatcnt[SNAPREBOOTCNT] = 200;
             break;
+
+#if (PRODUCT_HARDWARE_VARIANT == 0)
+        case DIAG_MESSAGE_ID_LCD_BACKLIGHT:
+            backlight_arg[0] = msg->params[0];
+            backlight_arg[1] = msg->params[1];
+            backlight_arg[2] = msg->params[2];
+            testrepeatcnt[LCDBACKLIGHTCNT] = 1;
+            break;
+
+        case DIAG_MESSAGE_ID_LCD_BACKLIGHT_OPT:
+            if (msg->params[0])
+            {
+                backlight_arg[0] = msg->params[0];
+                if (msg->params[1])
+                {
+                    backlight_arg[1] = msg->params[1];
+                    lux_scale = ONE_PCNT_LUX_FULL_SCALE / msg->params[1];
+                }
+            }
+            testrepeatcnt[LCDBACKLIGHTOPTCNT] = 1;
+            break;
+#endif
 
         case DIAG_MESSAGE_ID_OPT:
             opt[0] = msg->params[0];  //command
@@ -199,18 +238,41 @@ void DiagTask_HandleMsg(GENERIC_MSG_t* msg)
                 testrepeatcnt[OPTCNT] = 1;
             }
             break;
-            
-        case DIAG_MESSAGE_ID_LED_OPT:
-          testrepeatcnt[LEDOPTCNT] = (testrepeatcnt[LEDOPTCNT])?0:1; //toggle
-          LOG(diag, ROTTEN_LOGLEVEL_NORMAL, "LOPT %sabled\n\r",(testrepeatcnt[LEDOPTCNT])?"en":"dis");
-          break;   
-          
+
+        case DIAG_MESSAGE_ID_IR:
+            ag[0][0] = msg->params[0];
+            testrepeatcnt[IR] = 1;
+            break;
+
+  	case DIAG_MESSAGE_ID_IR_BLASTER:
+            opt[0] = msg->params[0];  //info type
+            opt[1] = msg->params[1];  //parameter
+            DIAG_UEIBlasterCommand_Info((DIAG_IR_BLASTER_COMMANDS)opt[0], opt[1]);    
+            break;
+
         case DIAG_MESSAGE_ID_PSOC_CMD:
             testrepeatcnt[PSOCCMDCNT] = 1;
             break;
-            
+
         case DIAG_MESSAGE_ID_PSOC_READ_CMD:
             psoc_read_result();
+            break;
+			
+        case DIAG_MESSAGE_ID_BUSTEST_DSP:
+            testrepeatcnt[BUSTESTDSPCNT] = msg->params[0];
+            testrepeatcnt[BUSTESTIDISPLAYCNT] = 1;
+            break;
+        case DIAG_MESSAGE_ID_BUSTEST_F0:
+            testrepeatcnt[BUSTESTF0CNT] = msg->params[0];
+            testrepeatcnt[BUSTESTIDISPLAYCNT] = 1;
+            break;
+        case DIAG_MESSAGE_ID_BUSTEST_PSOC:
+            testrepeatcnt[BUSTESTPSOCCNT] = msg->params[0];
+            testrepeatcnt[BUSTESTIDISPLAYCNT] = 1;
+            break;
+        case DIAG_MESSAGE_ID_BUSTEST_IRB:
+            testrepeatcnt[BUSTESTIRBCNT] = msg->params[0];
+            testrepeatcnt[BUSTESTIDISPLAYCNT] = 1;
             break;
 
         case DIAG_MESSAGE_ID_Timer:
@@ -223,13 +285,6 @@ void DiagTask_HandleMsg(GENERIC_MSG_t* msg)
                 led_ctrl(1, 0x12);
             }
 
-            check_mute_button();
-            
-            if(testrepeatcnt[LEDOPTCNT])
-            {
-              diags_opt_ltbar_control(); //read OPT and set LtBar intensity
-            }
-            
             if ((testrepeatcnt[ADCCNT]) && (timeout_tickcnt > 2))
             {
 
@@ -302,26 +357,25 @@ void DiagTask_HandleMsg(GENERIC_MSG_t* msg)
                 bb_show_all_gpio_pins();
                 testrepeatcnt[SHOWCNT]--;
             }
-
+#if (PRODUCT_HARDWARE_VARIANT == 0)
             if (testrepeatcnt[BUTTONCNT])
             {
-#if 0
                 int bmask = d_check_button_press(buttontestmask);
                 if (bmask & buttontestmask)
                 {
                     testrepeatcnt[BUTTONCNT]--;
                     buttontestmask = buttontestmask & ~bmask;
                 }
-#endif
             }
-
+#endif
             if (testrepeatcnt[PONRESETCNT])
             {
-              if(TRUE == check_pon_int_state()){
-                testrepeatcnt[PONRESETCNT] = 0;
-              }
+              	if(TRUE == check_pon_int_state())
+				{
+                	testrepeatcnt[PONRESETCNT] = 0;
+                }
             }
-            
+
             if (testrepeatcnt[SNAPOFFCNT])
             {
                 snap_off();
@@ -344,6 +398,55 @@ void DiagTask_HandleMsg(GENERIC_MSG_t* msg)
              }
             }
 
+#if (PRODUCT_HARDWARE_VARIANT == 0)
+            if (testrepeatcnt[LCDBACKLIGHTCNT])
+            {
+
+                lcd_backlight(backlight_arg);
+                backlight_arg[0] = 0;
+                backlight_arg[1] = 0;
+                testrepeatcnt[LCDBACKLIGHTCNT] = 0;
+            }
+
+            //read optical sensor and adjust the PWM
+            if (testrepeatcnt[LCDBACKLIGHTOPTCNT])
+            {
+                if (SUCCESS != opt3001_rd_lux(lux))
+                {
+                    LOG(diag, ROTTEN_LOGLEVEL_NORMAL,  "\r\nrd lux failed!\n\r");
+                    testrepeatcnt[OPTCNT] = 0;
+                    break;
+                }
+
+                backlight_arg[1] = lux[0] / lux_scale;    // LUX value converted to % and scaled
+
+                char tmpstr[20];
+
+                sprintf(tmpstr, "%6d.%-2d", backlight_arg[1], lux[1] / 10000);
+
+                set_pwm_percent(tmpstr);
+
+                LOG(diag, ROTTEN_LOGLEVEL_NORMAL,  "LUXtoPWM: %6d.%-2d PWM\n\r",
+                    backlight_arg[1], lux[1] / 10000);
+
+                lcd_backlight(backlight_arg);
+
+                if (backlight_arg[1] == 0)
+                {
+                    LOG(diag, ROTTEN_LOGLEVEL_NORMAL,  "STOP LCD backlight pwm\n\r");
+                    backlight_arg[0] = 0;
+                    lcd_backlight(backlight_arg); //disable the PWM timer
+                    testrepeatcnt[LCDBACKLIGHTOPTCNT] = 0;
+                }
+            }
+#endif
+
+    		if(testrepeatcnt[IR])
+			{
+      			DIAG_IRCommand_Handle((DIAG_IR_COMMANDS)ag[0][0]); 
+      			testrepeatcnt[IR]=0;
+    		}
+
             if (testrepeatcnt[OPTCNT])
             {
                 opt_cmd(opt);
@@ -355,7 +458,17 @@ void DiagTask_HandleMsg(GENERIC_MSG_t* msg)
               diags_ltbar_control();
               diags_ltbar_control_save_key_flag = 0;
             }
+            
+            if(diags_rf_remote_key_press_flag)  // RF remote key press
+            {
+              diags_ltbar_control();
+              diags_rf_remote_key_press_flag = 0;
+            }
 
+            
+            
+            
+            
             if (testrepeatcnt[PSOCCMDCNT])
             {
               if (FALSE == psoc_send_cmd())
@@ -366,6 +479,57 @@ void DiagTask_HandleMsg(GENERIC_MSG_t* msg)
               testrepeatcnt[PSOCINTCNT] = 1;  // the psoc rd responce flag
             }         
 
+            if(testrepeatcnt[BUSTESTDSPCNT])
+            {
+              if (DiagsBusTestDSPTimerHandler(testrepeatcnt[BUSTESTDSPCNT]))
+              {
+                if (testrepeatcnt[BUSTESTDSPCNT] != 0xffffffff )
+                {
+                  testrepeatcnt[BUSTESTDSPCNT]--;
+                }
+              }
+            }
+            if(testrepeatcnt[BUSTESTF0CNT])
+            {
+              if (DiagsBusTestF0TimerHandler(testrepeatcnt[BUSTESTF0CNT]))
+              {
+                if (testrepeatcnt[BUSTESTF0CNT] != 0xffffffff )
+                {
+                  testrepeatcnt[BUSTESTF0CNT]--;
+                }
+              }
+            }
+            if(testrepeatcnt[BUSTESTPSOCCNT])
+            {
+              if (DiagsBusTestPSOCTimerHandler(testrepeatcnt[BUSTESTPSOCCNT]))
+              {
+                if (testrepeatcnt[BUSTESTPSOCCNT] != 0xffffffff )
+                {
+                  testrepeatcnt[BUSTESTPSOCCNT]--;
+                }
+              }
+            }
+            if(testrepeatcnt[BUSTESTIRBCNT])
+            {
+              if (DiagsBusTestIRBTimerHandler(testrepeatcnt[BUSTESTIRBCNT]))
+              {
+                if (testrepeatcnt[BUSTESTIRBCNT] != 0xffffffff )
+                {
+                  testrepeatcnt[BUSTESTIRBCNT]--;
+                }
+              }
+            }
+            if(testrepeatcnt[BUSTESTIDISPLAYCNT])
+            {
+              if (DiagsBusTestDisplay())
+              {
+                testrepeatcnt[BUSTESTIDISPLAYCNT]=1;
+              }
+              else
+              {
+                testrepeatcnt[BUSTESTIDISPLAYCNT]= 0;
+              }
+            }
 
             timeout_tickcnt++;
             break;

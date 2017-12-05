@@ -20,11 +20,11 @@
 
 #if defined(PROFESSOR)
 #define F0_HELP_TEXT_1_OF_4 "\r\n\tUsage: where 0=clear 1=set st=read state\r\n"\
-                            "\tf0 hdmipwr,<0|1|st>   ## F0_HDMI_PWR_EN        (A1)\n"
-#define F0_HELP_TEXT_2_OF_4 "\tf0 hdmi5v,<0|1|st>    ## F0_HDMI_5V_EN         (A12)\n"
-#define F0_HELP_TEXT_3_OF_4 "\tf0 pwr,<en|dis|st>    ## F0 Power Init Sequence\n"
-#define F0_HELP_TEXT_4_OF_4 "\tf0 vr                 ## F0 Version Command\n"\
-                            "\tf0 reset              ## F0 Reset Command\n"
+                            "\r\n\tf0 hdmipwr,<0|1|st>   ## F0_HDMI_PWR_EN        (A1)"
+#define F0_HELP_TEXT_2_OF_4 "\r\n\tf0 hdmi5v,<0|1|st>    ## F0_HDMI_5V_EN         (A12)"
+#define F0_HELP_TEXT_3_OF_4 "\r\n\tf0 pwr,<en|dis|st>    ## F0 Power Init Sequence"
+#define F0_HELP_TEXT_4_OF_4 "\r\n\tf0 vr                 ## F0 Version Command"\
+                            "\r\n\tf0 reset              ## F0 Reset Command"
 #endif
 
 #define F0_ERROR_ARGS "\n\tError: Incorrect or missing args!"

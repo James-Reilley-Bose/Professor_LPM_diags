@@ -121,6 +121,7 @@ BOOL Remote_SPI_Read(void* data, unsigned int length)
     return ((SpiError == SPI_API_NO_ERROR) && (spi_bytes_ret == length)); 
 }
 
+extern void diag_rf_remote(uint8_t Remote_numPacketsReceived, Remote_SPIPacket_t *pkt);
 
 // Reads data from SPI until error or there is no data left. Packets are
 //  immedietly parsed
@@ -159,6 +160,7 @@ void Remote_SPI_ReadPackets(void)
             // parse packet
             Remote_Rx_ParsePacket(&pkt);
             Remote_numPacketsReceived += 1;
+            diag_rf_remote(Remote_numPacketsReceived, &pkt);
         }
         else
         {
