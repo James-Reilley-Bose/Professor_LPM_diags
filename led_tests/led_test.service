@@ -1,0 +1,12 @@
+[Unit]
+Description=Bose LED test  
+After=usb.target
+
+[Service]
+Type=Application                           
+ExecStart=/etc/initscripts/led_test.sh 1 100 0
+Restart=no
+StandardOutput=syslog+console          
+
+[Install]
+WantedBy=multi-user.target
