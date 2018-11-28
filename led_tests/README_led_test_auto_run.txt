@@ -1,7 +1,6 @@
 files: 
 led_test.sh
 led_test.service
-ledtest_load.sh
 
 
 
@@ -41,5 +40,11 @@ It should be running now(if mute button is not pressed).
 
 Power cycle the system and the led test should be running.
 
-
+Users guide:
+When mic mute is active(red) - blink sequence is stopped
+                               +/- can be used to speed of slow blink rate
+			       default is on for 1 second
+			       range  0 .1 .2 .3 .4 .5 .6 .7 .8 .9 1 2
+			       Each - or + button press selects the next delay
+			   
 
